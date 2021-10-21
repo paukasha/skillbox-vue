@@ -12,7 +12,7 @@
       </h3>
 
       <span class="catalog__price">
-             {{ product.price }} ₽
+             {{ product.price | numberFormat}} ₽
             </span>
 
       <ul class="colors colors--black">
@@ -42,7 +42,8 @@
 </template>
 
 <script>
-import eventBus from '@/eventBus'
+import goToPage from '@/helpers/goToPage'
+import numberFormat from '@/helpers/numberFormat'
 export default {
 
   data() {
@@ -50,10 +51,11 @@ export default {
       color: '#73B6EA'
     }
   },
+  filters: {
+    numberFormat
+  },
   methods: {
-    goToPage(pageName, pageParams) {
-      eventBus.$emit('goToPage', pageName, pageParams)
-    }
+    goToPage
   },
   props: ['product']
 }
