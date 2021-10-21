@@ -1,7 +1,7 @@
 <template>
     <li class="catalog__item" >
       <a class="catalog__pic" href="#"
-         @click.prevent="$emit('goToPage', 'product', {id: product.id}) ">
+         @click.prevent="goToPage('product', {id: product.id})">
         <img :src="product.image" srcset="img/radio@2x.jpg 2x" alt="Название товара">
       </a>
 
