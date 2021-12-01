@@ -14,6 +14,7 @@
         </li>
         <li class="breadcrumbs__item">
           <a class="breadcrumbs__link">
+
             {{ product.title }}
           </a>
         </li>
@@ -55,7 +56,7 @@
           {{ product.title }}
         </h2>
         <div class="item__form">
-          <form class="form" action="#" method="POST">
+          <form class="form" action="#" method="POST" @submit.prevent="addToCart">
             <b class="item__price">
               {{ product.price | numberFormat }} ₽
             </b>
@@ -125,7 +126,7 @@
                   </svg>
                 </button>
 
-                <input type="text" value="1" name="count">
+                <input type="text" v-model.number="productAmount">
 
                 <button type="button" aria-label="Добавить один товар">
                   <svg width="12" height="12" fill="currentColor">
@@ -133,6 +134,8 @@
                   </svg>
                 </button>
               </div>
+
+              <ProductCount :amount="productAmount" :productId="product.id"/>
 
               <button class="button button--primery" type="submit">
                 В корзину
@@ -200,7 +203,17 @@ import products from '@/data/products'
 import categories from '@/data/categories'
 import goToPage from '@/helpers/goToPage'
 import numberFormat from '@/helpers/numberFormat'
+import ProductCount from '@/components/ProductCount'
+
 export default {
+  data() {
+    return {
+      productAmount: 1
+    }
+  },
+  components: {
+    ProductCount
+  },
   filters: {
     numberFormat
   },
@@ -213,7 +226,23 @@ export default {
     }
   },
   methods: {
-    goToPage
+    goToPage,
+    addToCart() {
+      //nfr делать нельзя тк напрямую изменяем свойство
+      // this.$store.state.cartProducts.push({
+      //   productId: this.product.id,
+      //   amount: 1
+      // })
+
+
+      // чтобы вызвать мутацию надо у объекта хранилища вызвать метод commit и передать аргументы: 1 - название мутации, 2 - любые данные
+      this.$store.commit(
+        'addProductToCart',
+        {
+        productId: this.product.id,
+        amount: this.productAmount
+      })
+    }
   }
 }
 </script>
