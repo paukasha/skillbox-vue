@@ -46,13 +46,6 @@ export default new Vuex.Store({
       // вернуть массив но без элемента который удаляем
       state.cartProducts = state.cartProducts.filter(item => item.productId !== productId)
     },
-
-    incrementProduct(state, {productId, amount}) {
-      const item = state.cartProducts.find(item => item.productId === productId)
-      if (item) {
-        item.amount++
-      }
-    }
   },
   getters: {
     cartDetailProducts(state) {
