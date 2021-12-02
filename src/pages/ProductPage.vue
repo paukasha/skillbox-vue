@@ -119,23 +119,8 @@
             </fieldset>
 
             <div class="item__row">
-              <div class="form__counter">
-                <button type="button" aria-label="Убрать один товар">
-                  <svg width="12" height="12" fill="currentColor">
-                    <use xlink:href="#icon-minus"></use>
-                  </svg>
-                </button>
 
-                <input type="text" v-model.number="productAmount">
-
-                <button type="button" aria-label="Добавить один товар">
-                  <svg width="12" height="12" fill="currentColor">
-                    <use xlink:href="#icon-plus"></use>
-                  </svg>
-                </button>
-              </div>
-
-              <ProductCount :amount="productAmount" :productId="product.id"/>
+              <ProductCount :amount="productAmount" @update:amount="productAmount = $event"/>
 
               <button class="button button--primery" type="submit">
                 В корзину

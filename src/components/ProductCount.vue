@@ -1,7 +1,7 @@
 <template>
     <div class="item__row">
       <div class="form__counter">
-        <button type="button" aria-label="Убрать один товар">
+        <button :disabled="amount<=1"  type="button" aria-label="Убрать один товар" @click="decrement">
           <svg width="12" height="12" fill="currentColor">
             <use xlink:href="#icon-minus"></use>
           </svg>
@@ -20,15 +20,14 @@
 
 <script>
 export default {
-  props: ['productId', 'amount'],
+  props: ['amount'],
   methods: {
     increment() {
-      this.$store.commit(
-        'incrementProduct',
-        {
-          productId: this.productId,
-          amount:  this.amount
-        })
+      this.$emit('update:amount',this.amount + 1)
+
+    },
+    decrement() {
+      this.$emit('update:amount',this.amount - 1 )
     }
   }
 };
