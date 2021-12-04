@@ -19,6 +19,12 @@
       />
 
       <section class="catalog">
+        <div v-if="productsLoading">Загрузка товара...
+        </div>
+        <div v-if="productsLoadingFailed">
+          Произошла ошибка при загрузке товаров
+          <button @click.prevent="loadProducts">Попробовать снова</button>
+        </div>
         <ProductList :products="products"
                      />
         <BasePagination v-model="page" :page="page" :count-el="countProducts" :per-page="productsPerPage"/>
@@ -30,11 +36,11 @@
 </template>
 
 <script>
-import products from '@/data/products.js'
 import ProductList from '@/components/ProductList'
 import ProductFilter from '@/components/ProductFilter'
 import BasePagination from '@/components/BasePagination'
 import axios from  'axios'
+import { API_BASE_URL } from '@/config';
 
 export default {
   data() {
@@ -49,7 +55,9 @@ export default {
       productsPerPage: 3,
 
       // ..создаём св-во кот-ое будет зранить ответ от сервера
-      productsData: 0
+      productsData: 0,
+      productsLoading: false,
+      productsLoadingFailed: false
     }
   },
   components: {
@@ -69,14 +77,41 @@ export default {
       })
     },
     loadProducts() {
-      axios.get(`https://vue-study.skillbox.cc/api/products?page=${this.page}&limit=${this.productsPerPage}`)
-      .then(response => this.productsData = response.data)
+      this.productsLoading = true
+      clearTimeout(this.loadProductsTimer)
+      this.loadProductsTimer = setTimeout(() => {
+        axios.get(API_BASE_URL + `/api/products`, {
+          params: {
+            page: this.page,
+            limit: this.productsPerPage,
+            categoryId: this.filterCategoryId,
+            minPrice: this.filterPriceFrom,
+            maxPrice: this.filterPriceTo
+          }
+        })
+          .then(response => this.productsData = response.data)
+          .catch(() => this.productsLoadingFailed = true)
+          .then(()=> this.productsLoading = false)
+
+
+
+      },0)
     },
   },
   watch: {
     page() {
       this.loadProducts()
+    },
+    filterPriceFrom() {
+      this.loadProducts()
+    },
+    filterPriceTo() {
+      this.loadProducts()
+    },
+    filterCategoryId() {
+      this.loadProducts()
     }
+
   },
   computed: {
     products() {
@@ -93,27 +128,7 @@ export default {
     countProducts() {
       return this.productsData ? this.productsData.pagination.total : 0
     },
-    filteredProducts() {
-      let filteredProducts = products
 
-      if (this.filterPriceFrom > 0) {
-        filteredProducts = filteredProducts.filter(product => product.price >= this.filterPriceFrom)
-      }
-
-      if (this.filterPriceTo > 0) {
-        filteredProducts = filteredProducts.filter(product => product.price <= this.filterPriceTo)
-      }
-
-      if (this.filterCategoryId > 0) {
-        filteredProducts = filteredProducts.filter(product => product.categoryId === this.filterCategoryId)
-      }
-
-      if (this.colors.some(el => el === this.filterColor)) {
-        filteredProducts = filteredProducts.filter(product => product.color === this.filterColor)
-      }
-
-      return filteredProducts
-    }
   }
 };
 </script>
