@@ -132,9 +132,11 @@
 
               <ProductCount :amount="productAmount" @update:amount="productAmount = $event"/>
 
-              <button class="button button--primery" type="submit">
+              <button class="button button--primery" type="submit" :disabled="productAddSending">
                 В корзину
               </button>
+              <div v-show="productAdded">Товар добавлен в корзину</div>
+              <div v-show="productAddSending">Добавляем товар в корзину</div>
             </div>
           </form>
         </div>
@@ -213,6 +215,7 @@ import numberFormat from '@/helpers/numberFormat';
 import ProductCount from '@/components/ProductCount';
 import { API_BASE_URL } from '../config';
 import axios from 'axios';
+import { mapActions } from 'vuex'
 
 export default {
   data() {
@@ -220,7 +223,9 @@ export default {
       productAmount: 1,
       productData: null,
       productLoading: false,
-      productLoadingFailed: false
+      productLoadingFailed: false,
+      productAdded: false,
+      productAddSending: false
     };
   },
   components: {
@@ -247,14 +252,25 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['addProductToCart']),
     goToPage,
     addToCart() {
-      this.$store.commit(
-        'addProductToCart',
-        {
-          productId: this.product.id,
-          amount: this.productAmount
-        });
+      this.productAdded = false
+      this.productAddSending = true
+      //this.addProductToCart - это промис, так мы можем отследить кога товар добавился
+      // то есть после успешного запроса
+        this.addProductToCart({ productId: this.product.id, amount: this.productAmount })
+      .then(() => {
+        this.productAdded = true
+        this.productAddSending = false // идем в стор чтобы убедиться
+        // что возвращается промис - а он там не возвращается потому что не добавлен return
+      })
+      // this.$store.dispatch(
+      //   'addProductToCart',
+      //   {
+      //     productId: this.product.id,
+      //     amount: this.productAmount
+      //   });
     },
     loadProduct() {
       this.productLoading = true;

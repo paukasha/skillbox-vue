@@ -32,24 +32,70 @@ export default new Vuex.Store({
           context.commit('updateCartProductsData', response.data.items)
           context.commit('syncCartProductsData')
         })
-    }
+    },
   //   теперь вызываем это ействие в App.vue
+    addProductToCart(context, {productId, amount}) {
+     return (new Promise(resolve => setTimeout(resolve, 2000)))
+       .then(() => {
+        return axios.post(API_BASE_URL + '/api/baskets/products', {
+           productId: productId,
+           quantity: amount
+         }, {
+           params: {
+             userAccessKey: context.state.userAccessKey
+           }
+           // после успешного запроса когда вернулись данные корзины =Ю мы можем записать эти данные в хранилище
+           //используя мутацию которая называется updateCartProductsdata и после этого вызываем syncCartProductsData
+         }).then(response => {
+           context.commit('updateCartProductsData', response.data.items)
+           context.commit('syncCartProductsData')
+         })
+       })
+
+    },
+    // этот метод чтобы удалить данные
+    updateCartProductAmount(context, {productId, amount}) {
+      // вызываем мутацию которая отвечает за изменение данных о
+      // количестве товара в оригинальном массиве cartProducts
+      context.commit('updateCartProductAmount', {productId, amount})
+        // проверка нужна чтобы при пустом поле количество
+      // товара не отправлялся запрос на серверб если запрос отправляется то
+      // в поле значение меняется на предыдущее тем самым затрудняя ввод данных
+        // короч чтобы посмотреть этот баг убери проверку
+      if (amount < 1) {
+        return
+      }
+
+     return axios.put(API_BASE_URL + '/api/baskets/products', {
+        productId: productId,
+        quantity: amount
+      }, {
+        params: {
+          userAccessKey: context.state.userAccessKey
+        }
+      }).then(response => {
+        context.commit('updateCartProductsData', response.data.items)
+      }).catch(() => {
+        context.commit('syncCartProductsData')
+      })
+    }
   },
   mutations: {
-    addProductToCart(state, { productId, amount }) {
-      // найдем такой объект у которого  productid равен productId передаваемому в аргумтек
-      const item = state.cartProducts.find(item => item.productId === productId);
-
-      if (item) {
-        item.amount += amount;
-      } else {
-        state.cartProducts.push({
-          // значение productid, amount получаем из payload  amount: amount
-          productId,
-          amount
-        });
-      }
-    },
+    // после того как мы создали жействие addProductToCart мутация не нужна
+    // addProductToCart(state, { productId, amount }) {
+    //   // найдем такой объект у которого  productid равен productId передаваемому в аргумтек
+    //   const item = state.cartProducts.find(item => item.productId === productId);
+    //
+    //   if (item) {
+    //     item.amount += amount;
+    //   } else {
+    //     state.cartProducts.push({
+    //       // значение productid, amount получаем из payload  amount: amount
+    //       productId,
+    //       amount
+    //     });
+    //   }
+    // },
     updateCartProductAmount(state, { productId, amount }) {
       const item = state.cartProducts.find(item => item.productId === productId);
       if (item) {

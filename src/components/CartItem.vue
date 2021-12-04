@@ -56,7 +56,8 @@ export default {
       },
       // метод set будет вызывать мутацию, количество из того параметра которое приходит в выч св-ве
       set(value) {
-        this.$store.commit(
+        // вместо мутации передаем действие
+        this.$store.dispatch(
           'updateCartProductAmount',
           {
             productId: this.item.productId,
