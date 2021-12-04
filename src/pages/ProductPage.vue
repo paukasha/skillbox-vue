@@ -237,18 +237,8 @@ export default {
       return this.productData.category;
     }
   },
-  // метод loadproduct вызывается и при created и при вотче
-  // created() {
-  //   this.loadProduct();
-  // },
-  // можно исправить код чтобы метож
-  // loadproduct вызывается и при изменении свойства и при создании экземпляра коьпонента
-  // для этого  '$route.params.id сделаем объектом у которого есть спец функция handler
-  // и есть параметр immediate который ставим в true и теперь избавляемся от created
   watch: {
-    // '$route.params.id'() {
-    //   this.loadProduct();
-    // }
+
     '$route.params.id': {
       handler() {
         this.loadProduct()
