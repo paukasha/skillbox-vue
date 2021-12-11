@@ -49,7 +49,7 @@ export default {
       filterPriceTo: 0,
       filterCategoryId: 0,
       filterColor: '',
-      colors: ['#73B6EA', '#FFBE15', '#939393', '#8BE000', '#FF6B00', '#FFF', '#000'],
+      colors: [],
 
       page: 1,
       productsPerPage: 3,
@@ -67,15 +67,16 @@ export default {
   },
   // loadProducts вызываем когда компонент создаё1тся
   created() {
-    this.colorsToLowerCase()
+    // this.colorsToLowerCase()
     this.loadProducts()
   },
   methods: {
-    colorsToLowerCase() {
-      this.colors = this.colors.map(el => {
-        return  el.toLowerCase()
-      })
-    },
+
+    // colorsToLowerCase() {
+      // this.colors = this.colors.map(el => {
+      //   return  el.toLowerCase()
+      // })
+    // },
     loadProducts() {
       this.productsLoading = true
       clearTimeout(this.loadProductsTimer)
@@ -86,15 +87,13 @@ export default {
             limit: this.productsPerPage,
             categoryId: this.filterCategoryId,
             minPrice: this.filterPriceFrom,
-            maxPrice: this.filterPriceTo
+            maxPrice: this.filterPriceTo,
+            colorId: this.filterColor
           }
         })
           .then(response => this.productsData = response.data)
           .catch(() => this.productsLoadingFailed = true)
           .then(()=> this.productsLoading = false)
-
-
-
       },0)
     },
   },

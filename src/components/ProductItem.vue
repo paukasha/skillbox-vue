@@ -2,7 +2,7 @@
     <li class="catalog__item" >
       <router-link :to="{name: 'product', params: {id: product.id}}" class="catalog__pic" href="#"
         >
-        <img :src="product.image" srcset="img/radio@2x.jpg 2x" alt="Название товара">
+        <img :src="product.image" alt="Название товара">
       </router-link>
 
       <h3 class="catalog__title">
@@ -16,28 +16,17 @@
             </span>
 
       <ul class="colors colors--black">
-        <li class="colors__item">
+        <li class="colors__item" v-for="color in product.colors" :key="color.id">
           <label class="colors__label">
-            <input class="colors__radio sr-only" type="radio" value="#73B6EA" v-model="color">
-            <span class="colors__value" style="background-color: #73B6EA;">
+            <input class="colors__radio sr-only" type="radio" :id="color.id" v-model="currentColor" :value="color.code" >
+            <span class="colors__value" :style="{backgroundColor: color.code}">
                   </span>
+
           </label>
         </li>
-        <li class="colors__item">
-          <label class="colors__label">
-            <input class="colors__radio sr-only" type="radio" value="#8BE000" v-model="color">
-            <span class="colors__value" style="background-color: #8BE000;">
-                  </span>
-          </label>
-        </li>
-        <li class="colors__item">
-          <label class="colors__label">
-            <input class="colors__radio sr-only" type="radio" value="#222" v-model="color">
-            <span class="colors__value" style="background-color: #222;">
-                  </span>
-          </label>
-        </li>
+
       </ul>
+      <span> {{currentColor}}</span>
     </li>
 </template>
 
@@ -45,10 +34,9 @@
 import goToPage from '@/helpers/goToPage'
 import numberFormat from '@/helpers/numberFormat'
 export default {
-
   data() {
     return {
-      color: '#73B6EA'
+      currentColor: ''
     }
   },
   filters: {
@@ -57,7 +45,10 @@ export default {
   methods: {
     goToPage
   },
-  props: ['product']
+  props: ['product'],
+  mounted() {
+    console.log(this.product)
+  }
 }
 </script>
 

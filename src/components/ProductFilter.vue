@@ -28,14 +28,15 @@
       <fieldset class="form__block">
         <legend class="form__legend">Цвет</legend>
         <ul class="colors">
-          <li class="colors__item"  v-for="color in colors" :key="color">
+          <li class="colors__item"  v-for="color in colors" :key="color.id">
             <label class="colors__label">
-              <input class="colors__radio sr-only" type="radio" name="color" v-model="currentColor" :value="color">
-              <span class="colors__value" :style="{backgroundColor: color}">
+              <input class="colors__radio sr-only" type="radio" v-model="currentColor" :value="color.code">
+              <span class="colors__value" :style="{backgroundColor: color.code}">
                   </span>
             </label>
           </li>
         </ul>
+        <div>{{currentColor}}</div>
       </fieldset>
 
       <fieldset class="form__block">
@@ -119,11 +120,11 @@ export default {
       currentPriceTo: 0,
       currentCategoryId: 0,
       currentColor: '',
-
-      categoriesData: null
+      categoriesData: null,
+      colors: []
     }
   },
-  props: ['priceFrom', 'priceTo', 'categoryId',  'color', 'colors'],
+  props: ['priceFrom', 'priceTo', 'categoryId',  'color'],
   computed: {
     categories() {
       return this.categoriesData ? this.categoriesData.items : []
@@ -131,8 +132,15 @@ export default {
   },
   created() {
     this.loadCategories()
+    this.loadColors()
   },
   methods: {
+    loadColors() {
+      axios.get(API_BASE_URL + '/api/colors')
+        .then(response => {
+          this.colors = response.data.items
+        })
+    },
     loadCategories() {
       axios.get(API_BASE_URL + '/api/productCategories')
       .then(response => this.categoriesData = response.data)
@@ -142,7 +150,6 @@ export default {
       this.$emit('update:priceTo', this.currentPriceTo)
       this.$emit('update:categoryId', this.currentCategoryId)
       this.$emit('update:color', this.currentColor)
-
     },
     reset() {
       this.$emit('update:priceFrom', 0)
