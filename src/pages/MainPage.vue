@@ -18,19 +18,23 @@
                      :category-id.sync="filterCategoryId"
       />
 
+
+
       <section class="catalog">
         <div v-if="productsLoading">Загрузка товара...
         </div>
+
         <div v-if="productsLoadingFailed">
           Произошла ошибка при загрузке товаров
           <button @click.prevent="loadProducts">Попробовать снова</button>
         </div>
-        <ProductList :products="products"
-                     />
+        <ProductList :products="products"/>
         <BasePagination v-model="page" :page="page" :count-el="countProducts" :per-page="productsPerPage"/>
 
       </section>
+
     </div>
+
   </main>
 
 </template>
@@ -41,6 +45,9 @@ import ProductFilter from '@/components/ProductFilter'
 import BasePagination from '@/components/BasePagination'
 import axios from  'axios'
 import { API_BASE_URL } from '@/config';
+import products from '../data/products';
+
+
 
 export default {
   data() {
@@ -63,20 +70,22 @@ export default {
   components: {
     BasePagination,
     ProductList,
-    ProductFilter
+    ProductFilter,
+
   },
   // loadProducts вызываем когда компонент создаё1тся
   created() {
     // this.colorsToLowerCase()
     this.loadProducts()
+    this.loadColors()
   },
   methods: {
-
-    // colorsToLowerCase() {
-      // this.colors = this.colors.map(el => {
-      //   return  el.toLowerCase()
-      // })
-    // },
+    loadColors() {
+      axios.get(API_BASE_URL + '/api/colors')
+        .then(response => {
+          this.colors = response.data.items
+        })
+    },
     loadProducts() {
       this.productsLoading = true
       clearTimeout(this.loadProductsTimer)
@@ -91,7 +100,10 @@ export default {
             colorId: this.filterColor
           }
         })
-          .then(response => this.productsData = response.data)
+          .then(response => {
+            this.productsData = response.data;
+            console.log(this.productsData)
+          })
           .catch(() => this.productsLoadingFailed = true)
           .then(()=> this.productsLoading = false)
       },0)
@@ -109,12 +121,17 @@ export default {
     },
     filterCategoryId() {
       this.loadProducts()
+    },
+    filterColor() {
+      // this.productsData = this.productsData.some(el =>{
+      //   el.colors.filter(el => el.code === value)
+      // })
+      this.loadProducts()
     }
-
   },
   computed: {
     products() {
-     return  this.productsData
+     return this.productsData
        // ..преобзрауем формат картинок
        ?  this.productsData.items.map(product => {
       return {

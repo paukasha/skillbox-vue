@@ -3,7 +3,6 @@
     <ProductItem v-for="(product) in products"
                  :key="product.id"
                  :product="product"
-
                  />
   </ul>
 </template>

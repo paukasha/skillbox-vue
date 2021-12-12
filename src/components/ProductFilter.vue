@@ -121,10 +121,9 @@ export default {
       currentCategoryId: 0,
       currentColor: '',
       categoriesData: null,
-      colors: []
     }
   },
-  props: ['priceFrom', 'priceTo', 'categoryId',  'color'],
+  props: ['priceFrom', 'priceTo', 'categoryId',  'color', 'colors'],
   computed: {
     categories() {
       return this.categoriesData ? this.categoriesData.items : []
@@ -132,15 +131,10 @@ export default {
   },
   created() {
     this.loadCategories()
-    this.loadColors()
+
   },
   methods: {
-    loadColors() {
-      axios.get(API_BASE_URL + '/api/colors')
-        .then(response => {
-          this.colors = response.data.items
-        })
-    },
+
     loadCategories() {
       axios.get(API_BASE_URL + '/api/productCategories')
       .then(response => this.categoriesData = response.data)
@@ -150,6 +144,7 @@ export default {
       this.$emit('update:priceTo', this.currentPriceTo)
       this.$emit('update:categoryId', this.currentCategoryId)
       this.$emit('update:color', this.currentColor)
+
     },
     reset() {
       this.$emit('update:priceFrom', 0)
@@ -170,7 +165,7 @@ export default {
     },
     color(value) {
       this.currentColor = value
-    }
+    },
   }
 }
 </script>

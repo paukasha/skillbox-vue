@@ -11,11 +11,21 @@ export default new Vuex.Store({
       // { productId: 1, amount: 1 }
     ],
     userAccessKey: '',
-    cartProductsData: []
+    cartProductsData: [],
+    orderInfo: null
   },
   // любые действия синхр и асинх
   // первый аргумент - контекст содержит те же методы что и сам экземпляр глою хранилища
   actions: {
+    loadOrderInfo(context, orderId) {
+      axios.get(API_BASE_URL + '/api/orders/' + orderId, {
+        params: {
+          userAccessKey: context.state.userAccessKey
+        }
+      }).then(response => {
+        context.commit('updateOrderInfo', response.data)
+      })
+    },
     // получение инфы о корзине из api
     loadCart(context) {
       axios.get(API_BASE_URL + '/api/baskets/', {
@@ -81,6 +91,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    updateOrderInfo(state, orderInfo) {
+      state.orderInfo = orderInfo
+    },
     // после того как мы создали жействие addProductToCart мутация не нужна
     // addProductToCart(state, { productId, amount }) {
     //   // найдем такой объект у которого  productid равен productId передаваемому в аргумтек
@@ -119,6 +132,10 @@ export default new Vuex.Store({
           amount: item.quantity
         }
       })
+    },
+    resetCart(state) {
+      state.cartProducts = []
+      state.cartProductsData = []
     }
   },
   getters: {

@@ -21,12 +21,10 @@
             <input class="colors__radio sr-only" type="radio" :id="color.id" v-model="currentColor" :value="color.code" >
             <span class="colors__value" :style="{backgroundColor: color.code}">
                   </span>
-
           </label>
         </li>
 
       </ul>
-      <span> {{currentColor}}</span>
     </li>
 </template>
 
