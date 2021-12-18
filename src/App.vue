@@ -119,7 +119,8 @@ import {mapActions, mapMutations} from 'vuex'
 
 export default {
   components: {
-    CartIndicator
+    CartIndicator,
+    loadingCart: false
   },
   created() {
     const userAccessKey = localStorage.getItem('userAccessKey')

@@ -18,11 +18,13 @@
         Корзина
       </h1>
       <span class="content__info">
-        3 товара
+        {{ products.length}} товара
       </span>
     </div>
 
     <section class="cart">
+      <div v-if="this.$store.state.preLoadingCart">Загрузка корзины...</div>
+      <Preloader v-if="this.$store.state.preLoadingCart" />
       <form class="cart__form form" action="#" method="POST">
         <div class="cart__field">
           <ul class="cart__list">
@@ -51,8 +53,14 @@
 import numberFormat from '../helpers/numberFormat';
 import { mapGetters } from 'vuex'
 import CartItem from '@/components/CartItem'
+import Preloader from '@/components/preloaders/PreLoader'
 
 export default {
+  data() {
+    return{
+      loadCart: true
+    }
+  },
   computed: {
     ...mapGetters({ products: 'cartDetailProducts', totalPrice: 'cartTotalPrice' }),
   },
@@ -60,7 +68,8 @@ export default {
     numberFormat
   },
   components: {
-    CartItem
+    CartItem,
+    Preloader
   }
 }
 

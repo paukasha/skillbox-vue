@@ -30,7 +30,7 @@
         <ul class="colors">
           <li class="colors__item"  v-for="color in colors" :key="color.id">
             <label class="colors__label">
-              <input class="colors__radio sr-only" type="radio" v-model="currentColor" :value="color.code">
+              <input class="colors__radio sr-only" type="radio" v-model="currentColor" :value="color.id">
               <span class="colors__value" :style="{backgroundColor: color.code}">
                   </span>
             </label>

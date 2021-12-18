@@ -41,7 +41,7 @@
 
 <script>
 import numberFormat from '../helpers/numberFormat';
-import { mapMutations } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   props: ['item'],
@@ -67,7 +67,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations({deleteProduct: 'deleteCartProduct'})
+    ...mapActions({deleteProduct: 'deleteCartProduct'})
     // deleteProduct(productId) {
     //   this.$store.commit('deleteCartProduct', productId)
     // } равно  ...mapMutations({deleteProduct: 'deleteCartProduct'})

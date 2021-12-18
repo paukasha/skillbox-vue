@@ -26,31 +26,31 @@
     <section class="item">
       <div class="item__pics pics">
         <div class="pics__wrapper">
-          <img width="570" height="570" :src="product.image" alt="product.title">
+          <img width="570" height="570" :src="product.image.file.url" :alt="product.category.title">
         </div>
         <ul class="pics__list">
           <li class="pics__item">
             <a href="" class="pics__link pics__link--current">
-              <img width="98" height="98" src="img/phone-square-1.jpg"
-                   srcset="img/phone-square-1@2x.jpg 2x" alt="Название товара">
+              <img width="98" height="98" :src="product.image.file.url"
+                    alt="Название товара">
             </a>
           </li>
           <li class="pics__item">
             <a href="" class="pics__link">
-              <img width="98" height="98" src="img/phone-square-2.jpg"
-                   srcset="img/phone-square-2@2x.jpg 2x" alt="Название товара">
+              <img width="98" height="98" :src="product.image.file.url"
+                   alt="Название товара">
             </a>
           </li>
           <li class="pics__item">
             <a href="" class="pics__link">
-              <img width="98" height="98" src="img/phone-square-3.jpg"
-                   srcset="img/phone-square-3@2x.jpg 2x" alt="Название товара">
+              <img width="98" height="98" :src="product.image.file.url"
+                   alt="Название товара">
             </a>
           </li>
           <li class="pics__item">
             <a class="pics__link" href="#">
-              <img width="98" height="98" src="img/phone-square-4.jpg"
-                   srcset="img/phone-square-4@2x.jpg 2x" alt="Название товара">
+              <img width="98" height="98" :src="product.image.file.url"
+                   alt="Название товара">
             </a>
           </li>
         </ul>
@@ -70,28 +70,13 @@
             <fieldset class="form__block">
               <legend class="form__legend">Цвет:</legend>
               <ul class="colors">
-                <li class="colors__item">
+                <li class="colors__item" v-for="color in product.colors">
                   <label class="colors__label">
-                    <input class="colors__radio sr-only" type="radio" name="color-item" value="blue"
+                    <input class="colors__radio sr-only" type="radio" :value="color.id"
                            checked="">
-                    <span class="colors__value" style="background-color: #73B6EA;">
+                    <span class="colors__value" :style="{backgroundColor: color.code}">
                     </span>
                   </label>
-                </li>
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input class="colors__radio sr-only" type="radio" name="color-item"
-                           value="yellow">
-                    <span class="colors__value" style="background-color: #FFBE15;">
-                    </span>
-                  </label>
-                </li>
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input class="colors__radio sr-only" type="radio" name="color-item"
-                           value="gray">
-                    <span class="colors__value" style="background-color: #939393;">
-                  </span></label>
                 </li>
               </ul>
             </fieldset>
@@ -236,7 +221,8 @@ export default {
   },
   computed: {
     product() {
-      return this.productData;
+      console.log(this.productData)
+      return this.productData
     },
     category() {
       return this.productData.category;
@@ -262,15 +248,8 @@ export default {
         this.addProductToCart({ productId: this.product.id, amount: this.productAmount })
       .then(() => {
         this.productAdded = true
-        this.productAddSending = false // идем в стор чтобы убедиться
-        // что возвращается промис - а он там не возвращается потому что не добавлен return
+        this.productAddSending = false
       })
-      // this.$store.dispatch(
-      //   'addProductToCart',
-      //   {
-      //     productId: this.product.id,
-      //     amount: this.productAmount
-      //   });
     },
     loadProduct() {
       this.productLoading = true;

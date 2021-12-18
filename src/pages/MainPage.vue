@@ -1,5 +1,6 @@
 <template>
   <main class="content container">
+
     <div class="content__top content__top--catalog">
       <h1 class="content__title">
         Каталог
@@ -19,17 +20,18 @@
       />
 
 
-
       <section class="catalog">
         <div v-if="productsLoading">Загрузка товара...
         </div>
 
+        <Preloader  v-if="productsLoading" />
         <div v-if="productsLoadingFailed">
           Произошла ошибка при загрузке товаров
           <button @click.prevent="loadProducts">Попробовать снова</button>
         </div>
         <ProductList :products="products"/>
-        <BasePagination v-model="page" :page="page" :count-el="countProducts" :per-page="productsPerPage"/>
+        <BasePagination v-model="page" :page="page" :count-el="countProducts"
+                        :per-page="productsPerPage"/>
 
       </section>
 
@@ -40,13 +42,12 @@
 </template>
 
 <script>
-import ProductList from '@/components/ProductList'
-import ProductFilter from '@/components/ProductFilter'
-import BasePagination from '@/components/BasePagination'
-import axios from  'axios'
+import ProductList from '@/components/ProductList';
+import ProductFilter from '@/components/ProductFilter';
+import BasePagination from '@/components/BasePagination';
+import axios from 'axios';
 import { API_BASE_URL } from '@/config';
-import products from '../data/products';
-
+import Preloader from '@/components/preloaders/PreLoader';
 
 
 export default {
@@ -65,30 +66,30 @@ export default {
       productsData: 0,
       productsLoading: false,
       productsLoadingFailed: false
-    }
+    };
   },
   components: {
     BasePagination,
     ProductList,
     ProductFilter,
-
+    Preloader,
   },
   // loadProducts вызываем когда компонент создаё1тся
   created() {
     // this.colorsToLowerCase()
-    this.loadProducts()
-    this.loadColors()
+    this.loadProducts();
+    this.loadColors();
   },
   methods: {
     loadColors() {
       axios.get(API_BASE_URL + '/api/colors')
         .then(response => {
-          this.colors = response.data.items
-        })
+          this.colors = response.data.items;
+        });
     },
     loadProducts() {
-      this.productsLoading = true
-      clearTimeout(this.loadProductsTimer)
+      this.productsLoading = true;
+      clearTimeout(this.loadProductsTimer);
       this.loadProductsTimer = setTimeout(() => {
         axios.get(API_BASE_URL + `/api/products`, {
           params: {
@@ -102,49 +103,51 @@ export default {
         })
           .then(response => {
             this.productsData = response.data;
-            console.log(this.productsData)
+            console.log(this.productsData);
           })
           .catch(() => this.productsLoadingFailed = true)
-          .then(()=> this.productsLoading = false)
-      },0)
+          .then(() => this.productsLoading = false);
+      }, 0);
     },
   },
   watch: {
     page() {
-      this.loadProducts()
+      this.loadProducts();
     },
     filterPriceFrom() {
-      this.loadProducts()
+      this.loadProducts();
     },
     filterPriceTo() {
-      this.loadProducts()
+      this.loadProducts();
     },
     filterCategoryId() {
-      this.loadProducts()
+      this.loadProducts();
     },
     filterColor() {
-      // this.productsData = this.productsData.some(el =>{
-      //   el.colors.filter(el => el.code === value)
-      // })
-      this.loadProducts()
+      this.loadProducts();
     }
   },
   computed: {
     products() {
-     return this.productsData
-       // ..преобзрауем формат картинок
-       ?  this.productsData.items.map(product => {
-      return {
-        ...product,
-        image: product.image.file.url
-      }
-       })
-       : []
+      return this.productsData
+        // ..преобзрауем формат картинок
+        ? this.productsData.items.map(product => {
+          return {
+            ...product,
+            image: product.image.file.url
+          };
+        })
+        : [];
     },
     countProducts() {
-      return this.productsData ? this.productsData.pagination.total : 0
+      return this.productsData ? this.productsData.pagination.total : 0;
     },
-
   }
 };
 </script>
+
+<style scoped>
+  .catalog {
+    position: relative;
+  }
+</style>

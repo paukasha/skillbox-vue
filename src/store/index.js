@@ -12,136 +12,140 @@ export default new Vuex.Store({
     ],
     userAccessKey: '',
     cartProductsData: [],
-    orderInfo: null
+    orderInfo: null,
+    preLoadingCart: false
   },
-  // любые действия синхр и асинх
-  // первый аргумент - контекст содержит те же методы что и сам экземпляр глою хранилища
   actions: {
     loadOrderInfo(context, orderId) {
       axios.get(API_BASE_URL + '/api/orders/' + orderId, {
         params: {
           userAccessKey: context.state.userAccessKey
         }
-      }).then(response => {
-        context.commit('updateOrderInfo', response.data)
       })
+        .then(response => {
+          context.commit('updateOrderInfo', response.data);
+        });
     },
     // получение инфы о корзине из api
     loadCart(context) {
+      context.state.preLoadingCart = true;
       axios.get(API_BASE_URL + '/api/baskets/', {
         params: {
           userAccessKey: context.state.userAccessKey
-        }
+        },
       })
-        // при успезном ответе вызываем мутации которые изменят значения свойств состояния
         .then(response => {
+          context.state.preLoadingCart = false;
           if (!context.state.userAccessKey) {
-            localStorage.setItem('userAccessKey', response.data.user.accessKey)
-            context.commit('updateUserAccessKey', response.data.user.accessKey)
+            localStorage.setItem('userAccessKey', response.data.user.accessKey);
+            context.commit('updateUserAccessKey', response.data.user.accessKey);
           }
-          context.commit('updateCartProductsData', response.data.items)
-          context.commit('syncCartProductsData')
-        })
+          context.commit('updateCartProductsData', response.data.items);
+          context.commit('syncCartProductsData');
+          console.log(response.data.items);
+        });
     },
-  //   теперь вызываем это ействие в App.vue
-    addProductToCart(context, {productId, amount}) {
-     return (new Promise(resolve => setTimeout(resolve, 2000)))
-       .then(() => {
-        return axios.post(API_BASE_URL + '/api/baskets/products', {
-           productId: productId,
-           quantity: amount
-         }, {
-           params: {
-             userAccessKey: context.state.userAccessKey
-           }
-           // после успешного запроса когда вернулись данные корзины =Ю мы можем записать эти данные в хранилище
-           //используя мутацию которая называется updateCartProductsdata и после этого вызываем syncCartProductsData
-         }).then(response => {
-           context.commit('updateCartProductsData', response.data.items)
-           context.commit('syncCartProductsData')
-         })
-       })
+    addProductToCart(context, {
+      productId,
+      amount
+    }) {
+      context.state.preLoadingCart = true;
+      return (new Promise(resolve => setTimeout(resolve, 2000)))
+        .then(() => {
+          return axios.post(API_BASE_URL + '/api/baskets/products', {
+            productId: productId,
+            quantity: amount
+          }, {
+            params: {
+              userAccessKey: context.state.userAccessKey
+            }
+            // после успешного запроса когда вернулись данные корзины =Ю мы можем записать эти данные в хранилище
+            //используя мутацию которая называется updateCartProductsdata и после этого вызываем syncCartProductsData
+          })
+            .then(response => {
+              context.state.preLoadingCart = false;
+              context.commit('updateCartProductsData', response.data.items);
+              context.commit('syncCartProductsData');
+            });
+        });
 
     },
-    // этот метод чтобы удалить данные
-    updateCartProductAmount(context, {productId, amount}) {
-      // вызываем мутацию которая отвечает за изменение данных о
-      // количестве товара в оригинальном массиве cartProducts
-      context.commit('updateCartProductAmount', {productId, amount})
-        // проверка нужна чтобы при пустом поле количество
-      // товара не отправлялся запрос на серверб если запрос отправляется то
-      // в поле значение меняется на предыдущее тем самым затрудняя ввод данных
-        // короч чтобы посмотреть этот баг убери проверку
+    deleteCartProduct(context, productId) {
+      return (new Promise(resolve => setTimeout(resolve, 2000)))
+        .then(() => {
+          return axios.delete(API_BASE_URL + '/api/baskets/products', {
+            params: {
+              userAccessKey: context.state.userAccessKey,
+            },
+            data: {
+              productId: productId,
+            },
+          })
+            .then(response => {
+              context.commit('updateCartProductsData', response.data.items);
+              context.commit('syncCartProductsData');
+            });
+        });
+    },
+    updateCartProductAmount(context, { productId, amount }) {
+      context.commit('updateCartProductAmount', { productId, amount });
       if (amount < 1) {
-        return
+        return;
       }
 
-     return axios.put(API_BASE_URL + '/api/baskets/products', {
+      return axios.put(API_BASE_URL + '/api/baskets/products', {
         productId: productId,
         quantity: amount
       }, {
         params: {
           userAccessKey: context.state.userAccessKey
         }
-      }).then(response => {
-        context.commit('updateCartProductsData', response.data.items)
-      }).catch(() => {
-        context.commit('syncCartProductsData')
       })
+        .then(response => {
+          context.commit('updateCartProductsData', response.data.items);
+        })
+        .catch(() => {
+          context.commit('syncCartProductsData');
+        });
     }
   },
   mutations: {
     updateOrderInfo(state, orderInfo) {
-      state.orderInfo = orderInfo
+      state.orderInfo = orderInfo;
     },
-    // после того как мы создали жействие addProductToCart мутация не нужна
-    // addProductToCart(state, { productId, amount }) {
-    //   // найдем такой объект у которого  productid равен productId передаваемому в аргумтек
-    //   const item = state.cartProducts.find(item => item.productId === productId);
-    //
-    //   if (item) {
-    //     item.amount += amount;
-    //   } else {
-    //     state.cartProducts.push({
-    //       // значение productid, amount получаем из payload  amount: amount
-    //       productId,
-    //       amount
-    //     });
-    //   }
-    // },
-    updateCartProductAmount(state, { productId, amount }) {
+    updateCartProductAmount(state, {
+      productId,
+      amount
+    }) {
       const item = state.cartProducts.find(item => item.productId === productId);
       if (item) {
         item.amount = amount;
       }
     },
-    deleteCartProduct(state, productId) {
-      // вернуть массив но без элемента который удаляем
-      state.cartProducts = state.cartProducts.filter(item => item.productId !== productId);
-    },
+
     updateUserAccessKey(state, accessKey) {
-      state.userAccessKey = accessKey
+      state.userAccessKey = accessKey;
     },
     updateCartProductsData(state, items) {
-      state.cartProductsData = items
+      state.cartProductsData = items;
     },
     syncCartProductsData(state) {
       state.cartProducts = state.cartProductsData.map(item => {
         return {
           productId: item.product.id,
           amount: item.quantity
-        }
-      })
+        };
+      });
     },
     resetCart(state) {
-      state.cartProducts = []
-      state.cartProductsData = []
+      state.cartProducts = [];
+      state.cartProductsData = [];
     }
   },
   getters: {
     cartDetailProducts(state) {
       return state.cartProducts.map(item => {
-        const product = state.cartProductsData.find(p => p.product.id === item.productId).product
+        const product = state.cartProductsData.find(p => p.product.id === item.productId).product;
         return {
           ...item,
           product: {
