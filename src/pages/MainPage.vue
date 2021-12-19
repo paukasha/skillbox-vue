@@ -103,7 +103,6 @@ export default {
         })
           .then(response => {
             this.productsData = response.data;
-            console.log(this.productsData);
           })
           .catch(() => this.productsLoadingFailed = true)
           .then(() => this.productsLoading = false);

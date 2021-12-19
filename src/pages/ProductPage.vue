@@ -221,7 +221,6 @@ export default {
   },
   computed: {
     product() {
-      console.log(this.productData)
       return this.productData
     },
     category() {

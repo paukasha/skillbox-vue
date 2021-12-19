@@ -45,9 +45,6 @@ export default {
     goToPage
   },
   props: ['product'],
-  mounted() {
-    console.log(this.product)
-  }
 }
 </script>
 

@@ -38,7 +38,7 @@
                 Получатель
               </span>
               <span class="dictionary__value">
-                Иванова Василиса Алексеевна
+<!--               {{ clientOrderInfo.name }}-->
               </span>
             </li>
             <li class="dictionary__item">
@@ -46,7 +46,7 @@
                 Адрес доставки
               </span>
               <span class="dictionary__value">
-                Москва, ул. Ленина, 21, кв. 33
+                 {{ clientOrderInfo.address }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -54,7 +54,7 @@
                 Телефон
               </span>
               <span class="dictionary__value">
-                8 800 989 74 84
+                 {{ clientOrderInfo.phone }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -62,7 +62,7 @@
                 Email
               </span>
               <span class="dictionary__value">
-                lalala@mail.ru
+                 {{ clientOrderInfo.email }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -78,35 +78,38 @@
 
         <div class="cart__block">
           <ul class="cart__orders">
-            <li class="cart__order">
-              <h3>Смартфон Xiaomi Redmi Note 7 Pro 6/128GB</h3>
-              <b>18 990 ₽</b>
-              <span>Артикул: 150030</span>
-            </li>
-            <li class="cart__order">
-              <h3>Гироскутер Razor Hovertrax 2.0ii</h3>
-              <b>4 990 ₽</b>
-              <span>Артикул: 150030</span>
-            </li>
-            <li class="cart__order">
-              <h3>Электрический дрифт-карт Razor Lil’ Crazy</h3>
-              <b>8 990 ₽</b>
-              <span>Артикул: 150030</span>
+            <li class="cart__order" v-for="items in clientOrderInfo.basket.items">
+              <h3>{{ items.product.title }}</h3>
+              <b>{{items.product.price | numberFormat }} ₽</b>
+              <span>Артикул: {{ items.product.id }}</span>
             </li>
           </ul>
 
           <div class="cart__total">
             <p>Доставка: <b>500 ₽</b></p>
-            <p>Итого: <b>3</b> товара на сумму <b>37 970 ₽</b></p>
+            <p>Итого: <b>{{ clientOrderInfo.basket.items.length }}</b> товара на сумму <b>{{ clientOrderInfo.totalPrice | numberFormat }} ₽</b></p>
           </div>
         </div>
       </form>
     </section>
+    <div>{{clientOrderInfo}}</div>
   </main>
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+import numberFormat from '@/helpers/numberFormat';
+
 export default {
+
+  computed: {
+    clientOrderInfo(){
+     return this.$store.state.orderInfo ? this.$store.state.orderInfo : {}
+    }
+  },
+  filters: {
+    numberFormat
+  },
     created() {
       if (this.$store.state.orderInfo && this.$store.state.orderInfo === this.$route.params.id) {
         return

@@ -1,5 +1,5 @@
 <template>
-    <div class="item__row">
+
       <div class="form__counter">
         <button :disabled="amount<=1"  type="button" aria-label="Убрать один товар" @click="decrement">
           <svg width="12" height="12" fill="currentColor">
@@ -15,7 +15,7 @@
           </svg>
         </button>
       </div>
-  </div>
+
 </template>
 
 <script>
@@ -34,5 +34,8 @@ export default {
 </script>
 
 <style scoped>
-
+.form__counter button,
+.form__counter input{
+  height: 100%;
+}
 </style>

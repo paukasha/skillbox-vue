@@ -6,12 +6,16 @@
 
 <script>
 import FormFieldMixin from '@/mixins/FormFieldMixin'
+import BaseFormField from '@/components/BaseFormField'
 
 export default {
   props: {
     type: {
       default: 'text'
     }
+  },
+  components: {
+    BaseFormField
   },
   mixins: [FormFieldMixin]
 }

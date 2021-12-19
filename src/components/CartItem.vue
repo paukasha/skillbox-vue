@@ -10,20 +10,8 @@
                 Артикул: {{ item.product.id }}
               </span>
 
-    <div class="product__counter form__counter">
-      <button type="button" aria-label="Убрать один товар">
-        <svg width="10" height="10" fill="currentColor">
-          <use xlink:href="#icon-minus"></use>
-        </svg>
-      </button>
-
-      <input type="text" v-model.number="amount" name="count">
-
-      <button type="button" aria-label="Добавить один товар">
-        <svg width="10" height="10" fill="currentColor">
-          <use xlink:href="#icon-plus"></use>
-        </svg>
-      </button>
+    <div class="item__row">
+      <ProductCount class="cartProductCounter" :amount="amount" @update:amount="amount = $event"/>
     </div>
 
     <b class="product__price">
@@ -42,21 +30,22 @@
 <script>
 import numberFormat from '../helpers/numberFormat';
 import { mapActions } from 'vuex'
+import ProductCount from '@/components/ProductCount'
 
 export default {
   props: ['item'],
   filters: {
     numberFormat
   },
+  components: {
+    ProductCount
+  },
   computed: {
     amount: {
-      //get возвращает значение количества из входного параметра
       get() {
         return this.item.amount
       },
-      // метод set будет вызывать мутацию, количество из того параметра которое приходит в выч св-ве
       set(value) {
-        // вместо мутации передаем действие
         this.$store.dispatch(
           'updateCartProductAmount',
           {
@@ -68,9 +57,15 @@ export default {
   },
   methods: {
     ...mapActions({deleteProduct: 'deleteCartProduct'})
-    // deleteProduct(productId) {
-    //   this.$store.commit('deleteCartProduct', productId)
-    // } равно  ...mapMutations({deleteProduct: 'deleteCartProduct'})
   }
 };
 </script>
+
+<style scoped>
+.cartProductCounter {
+  border: 1px solid #b9b9b9;
+  width: 150px;
+  height: 50px;
+}
+
+</style>

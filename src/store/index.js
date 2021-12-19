@@ -24,6 +24,8 @@ export default new Vuex.Store({
       })
         .then(response => {
           context.commit('updateOrderInfo', response.data);
+          console.log(context)
+          console.log(response.data)
         });
     },
     // получение инфы о корзине из api
@@ -42,16 +44,10 @@ export default new Vuex.Store({
           }
           context.commit('updateCartProductsData', response.data.items);
           context.commit('syncCartProductsData');
-          console.log(response.data.items);
         });
     },
-    addProductToCart(context, {
-      productId,
-      amount
-    }) {
+    addProductToCart(context, { productId, amount }) {
       context.state.preLoadingCart = true;
-      return (new Promise(resolve => setTimeout(resolve, 2000)))
-        .then(() => {
           return axios.post(API_BASE_URL + '/api/baskets/products', {
             productId: productId,
             quantity: amount
@@ -59,20 +55,16 @@ export default new Vuex.Store({
             params: {
               userAccessKey: context.state.userAccessKey
             }
-            // после успешного запроса когда вернулись данные корзины =Ю мы можем записать эти данные в хранилище
-            //используя мутацию которая называется updateCartProductsdata и после этого вызываем syncCartProductsData
           })
             .then(response => {
               context.state.preLoadingCart = false;
               context.commit('updateCartProductsData', response.data.items);
               context.commit('syncCartProductsData');
             });
-        });
+
 
     },
     deleteCartProduct(context, productId) {
-      return (new Promise(resolve => setTimeout(resolve, 2000)))
-        .then(() => {
           return axios.delete(API_BASE_URL + '/api/baskets/products', {
             params: {
               userAccessKey: context.state.userAccessKey,
@@ -85,7 +77,6 @@ export default new Vuex.Store({
               context.commit('updateCartProductsData', response.data.items);
               context.commit('syncCartProductsData');
             });
-        });
     },
     updateCartProductAmount(context, { productId, amount }) {
       context.commit('updateCartProductAmount', { productId, amount });
@@ -113,10 +104,7 @@ export default new Vuex.Store({
     updateOrderInfo(state, orderInfo) {
       state.orderInfo = orderInfo;
     },
-    updateCartProductAmount(state, {
-      productId,
-      amount
-    }) {
+    updateCartProductAmount(state, { productId, amount }) {
       const item = state.cartProducts.find(item => item.productId === productId);
       if (item) {
         item.amount = amount;
