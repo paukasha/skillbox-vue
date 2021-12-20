@@ -2,9 +2,9 @@
   <div>
   <header class="header">
     <div class="header__wrapper container">
-      <router-link :to="{name: 'main'}" tag="span" class="header__info">Каталог</router-link>
+      <router-link :to="{name: 'main'}" class="header__info">Каталог</router-link>
 
-      <router-link :to="{name: 'main'}" class="header__logo" href="#">
+      <router-link :to="{name: 'main'}" class="header__logo">
         <img src="img/svg/logo-tech.svg" alt="Логотип интернет магазина Технозавррр" width="190" height="33">
       </router-link>
 

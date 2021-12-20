@@ -44,6 +44,7 @@ export default new Vuex.Store({
           }
           context.commit('updateCartProductsData', response.data.items);
           context.commit('syncCartProductsData');
+          console.log(response.data.items)
         });
     },
     addProductToCart(context, { productId, amount }) {

@@ -20,16 +20,16 @@
 
 <script>
 export default {
-  props: ['amount'],
+  props: [ 'amount'],
   methods: {
     increment() {
-      this.$emit('update:amount',this.amount + 1)
-
+      this.$emit('update:amount',Math.abs(this.amount  + 1))
     },
     decrement() {
-      this.$emit('update:amount',this.amount - 1 )
+      this.$emit('update:amount',Math.abs(this.amount - 1))
     }
-  }
+  },
+
 };
 </script>
 

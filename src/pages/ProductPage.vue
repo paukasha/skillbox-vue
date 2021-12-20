@@ -225,7 +225,9 @@ export default {
     },
     category() {
       return this.productData.category;
-    }
+    },
+
+
   },
   watch: {
 

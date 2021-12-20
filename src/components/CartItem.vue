@@ -11,7 +11,9 @@
               </span>
 
     <div class="item__row">
-      <ProductCount class="cartProductCounter" :amount="amount" @update:amount="amount = $event"/>
+      <ProductCount class="cartProductCounter"
+                    :amount="amount"
+                    @update:amount="amount = $event"/>
     </div>
 
     <b class="product__price">
@@ -52,6 +54,7 @@ export default {
             productId: this.item.productId,
             amount: value
           });
+        console.log(value)
       }
     }
   },

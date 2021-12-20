@@ -38,7 +38,7 @@
                 Получатель
               </span>
               <span class="dictionary__value">
-<!--               {{ clientOrderInfo.name }}-->
+               {{ clientOrderInfo.name }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -78,10 +78,10 @@
 
         <div class="cart__block">
           <ul class="cart__orders">
-            <li class="cart__order" v-for="items in clientOrderInfo.basket.items">
-              <h3>{{ items.product.title }}</h3>
-              <b>{{items.product.price | numberFormat }} ₽</b>
-              <span>Артикул: {{ items.product.id }}</span>
+            <li class="cart__order" v-for="item in clientOrderInfo.basket.items">
+              <h3>{{ item.product.title }}</h3>
+              <b>{{item.product.price | numberFormat }} ₽</b>
+              <span>Артикул: {{ item.product.id }}</span>
             </li>
           </ul>
 
@@ -104,7 +104,7 @@ export default {
 
   computed: {
     clientOrderInfo(){
-     return this.$store.state.orderInfo ? this.$store.state.orderInfo : {}
+     return this.$store.state.orderInfo
     }
   },
   filters: {

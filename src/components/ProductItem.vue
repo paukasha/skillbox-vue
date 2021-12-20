@@ -1,6 +1,6 @@
 <template>
     <li class="catalog__item" >
-      <router-link :to="{name: 'product', params: {id: product.id}}" class="catalog__pic" href="#"
+      <router-link :to="{name: 'product', params: {id: product.id}}" class="catalog__pic"
         >
         <img :src="product.image" alt="Название товара">
       </router-link>

@@ -41,7 +41,7 @@
           </p>
 
           <router-link v-show="this.$store.state.cartProductsData.length > 0"
-                       tag="button" :to="{name: 'order'}"
+                       :to="{name: 'order'}"
                        class="cart__button button button--primery" type="submit">
             Оформить заказ
           </router-link>
@@ -76,3 +76,10 @@ export default {
 }
 
 </script>
+
+<style scoped>
+.cart__button {
+  display: inline-block;
+  text-align: center;
+}
+</style>
