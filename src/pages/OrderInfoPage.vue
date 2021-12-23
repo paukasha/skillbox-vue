@@ -1,6 +1,8 @@
 <template>
-  <main class="content container">
-    <div class="content__top">
+  <PreLoader v-if="this.$store.state.preloadOrderInfo" />
+  <main  v-else class="content container">
+
+    <div  class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
           <a class="breadcrumbs__link" href="index.html">
@@ -99,16 +101,19 @@
 <script>
 import { mapMutations } from 'vuex';
 import numberFormat from '@/helpers/numberFormat';
+import PreLoader from '../components/preloaders/PreLoader';
 
 export default {
-
   computed: {
     clientOrderInfo(){
-     return this.$store.state.orderInfo
+      return this.$store.state.orderInfo
     }
   },
   filters: {
     numberFormat
+  },
+  components: {
+    PreLoader
   },
     created() {
       if (this.$store.state.orderInfo && this.$store.state.orderInfo === this.$route.params.id) {

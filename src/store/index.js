@@ -13,24 +13,25 @@ export default new Vuex.Store({
     userAccessKey: '',
     cartProductsData: [],
     orderInfo: null,
-    preLoadingCart: false
+    preLoadingCart: false,
+    preloadOrderInfo: false
   },
   actions: {
-    loadOrderInfo(context, orderId) {
-      axios.get(API_BASE_URL + '/api/orders/' + orderId, {
-        params: {
-          userAccessKey: context.state.userAccessKey
-        }
-      })
-        .then(response => {
-          context.commit('updateOrderInfo', response.data);
-          console.log(context)
-          console.log(response.data)
-        });
+     loadOrderInfo(context, orderId) {
+      this.preloadOrderInfo = true
+         axios.get(API_BASE_URL + '/api/orders/' + orderId, {
+            params: {
+              userAccessKey: context.state.userAccessKey
+            }
+          }).then(response => {
+           this.preloadOrderInfo = false
+            context.commit('updateOrderInfo', response.data);
+          });
     },
     // получение инфы о корзине из api
     loadCart(context) {
       context.state.preLoadingCart = true;
+
       axios.get(API_BASE_URL + '/api/baskets/', {
         params: {
           userAccessKey: context.state.userAccessKey
