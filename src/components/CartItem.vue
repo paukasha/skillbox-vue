@@ -59,7 +59,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions({deleteProduct: 'deleteCartProduct'})
+    ...mapActions({deleteProduct: 'deleteCartProduct'}),
+    update(number){
+      this.amount=number;
+    },
   }
 };
 </script>

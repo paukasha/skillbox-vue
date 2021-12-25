@@ -15,21 +15,31 @@
           </svg>
         </button>
       </div>
-
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      counter: 1,
+    }
+  },
   props: [ 'amount'],
   methods: {
     increment() {
-      this.$emit('update:amount',Math.abs(this.amount  + 1))
+      let counter = this.amount
+      counter++
+      this.$emit('update:amount', counter)
     },
     decrement() {
-      this.$emit('update:amount',Math.abs(this.amount - 1))
-    }
+      this.counter--
+    },
   },
-
+  // watch: {
+  //   counter(value) {
+  //     this.$emit('update:amount')
+  //   }
+  // },
 };
 </script>
 

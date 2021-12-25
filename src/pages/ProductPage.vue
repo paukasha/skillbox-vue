@@ -112,10 +112,10 @@
                 </li>
               </ul>
             </fieldset>
-
             <div class="item__row">
 
-              <ProductCount :amount="productAmount" @update:amount="productAmount = $event"/>
+              <ProductCount :amount="productAmount"
+                            @update:amount="updateQuantity"/>
 
               <button class="button button--primery" type="submit" :disabled="productAddSending">
                 В корзину
@@ -202,6 +202,8 @@ import { API_BASE_URL } from '../config';
 import axios from 'axios';
 import { mapActions } from 'vuex'
 
+
+
 export default {
   data() {
     return {
@@ -214,7 +216,33 @@ export default {
     };
   },
   components: {
-    ProductCount
+    ProductCount,
+  },
+  methods: {
+    updateQuantity(number){
+      this.productAmount = number;
+    },
+    ...mapActions(['addProductToCart']),
+    goToPage,
+    addToCart() {
+      this.productAdded = false
+      this.productAddSending = true
+      //this.addProductToCart - это промис, так мы можем отследить кога товар добавился
+      // то есть после успешного запроса
+      this.addProductToCart({ productId: this.product.id, amount: this.productAmount })
+        .then(() => {
+          this.productAdded = true
+          this.productAddSending = false
+        })
+    },
+    loadProduct() {
+      this.productLoading = true;
+      this.productLoadingFailed = false;
+      axios.get(API_BASE_URL + '/api/products/' + this.$route.params.id)
+        .then(response => this.productData = response.data)
+        .catch(() => this.productLoadingFailed = true)
+        .then(() => this.productLoading = false);
+    }
   },
   filters: {
     numberFormat
@@ -226,8 +254,6 @@ export default {
     category() {
       return this.productData.category;
     },
-
-
   },
   watch: {
 
@@ -238,29 +264,7 @@ export default {
       immediate: true
     }
   },
-  methods: {
-    ...mapActions(['addProductToCart']),
-    goToPage,
-    addToCart() {
-      this.productAdded = false
-      this.productAddSending = true
-      //this.addProductToCart - это промис, так мы можем отследить кога товар добавился
-      // то есть после успешного запроса
-        this.addProductToCart({ productId: this.product.id, amount: this.productAmount })
-      .then(() => {
-        this.productAdded = true
-        this.productAddSending = false
-      })
-    },
-    loadProduct() {
-      this.productLoading = true;
-      this.productLoadingFailed = false;
-      axios.get(API_BASE_URL + '/api/products/' + this.$route.params.id)
-        .then(response => this.productData = response.data)
-        .catch(() => this.productLoadingFailed = true)
-        .then(() => this.productLoading = false);
-    }
-  }
+
 };
 </script>
 

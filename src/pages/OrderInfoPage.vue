@@ -94,7 +94,6 @@
         </div>
       </form>
     </section>
-    <div>{{clientOrderInfo}}</div>
   </main>
 </template>
 

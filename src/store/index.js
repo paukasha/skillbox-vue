@@ -18,13 +18,13 @@ export default new Vuex.Store({
   },
   actions: {
      loadOrderInfo(context, orderId) {
-      this.preloadOrderInfo = true
+      context.state.preloadOrderInfo = true
          axios.get(API_BASE_URL + '/api/orders/' + orderId, {
             params: {
               userAccessKey: context.state.userAccessKey
             }
           }).then(response => {
-           this.preloadOrderInfo = false
+           context.state.preloadOrderInfo = false
             context.commit('updateOrderInfo', response.data);
           });
     },
