@@ -60,9 +60,6 @@ export default {
   },
   methods: {
     ...mapActions({deleteProduct: 'deleteCartProduct'}),
-    update(number){
-      this.amount=number;
-    },
   }
 };
 </script>

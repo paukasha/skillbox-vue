@@ -115,7 +115,7 @@
             <div class="item__row">
 
               <ProductCount :amount="productAmount"
-                            @update:amount="updateQuantity"/>
+                            @update:amount="productAmount = $event"/>
 
               <button class="button button--primery" type="submit" :disabled="productAddSending">
                 В корзину
@@ -227,8 +227,6 @@ export default {
     addToCart() {
       this.productAdded = false
       this.productAddSending = true
-      //this.addProductToCart - это промис, так мы можем отследить кога товар добавился
-      // то есть после успешного запроса
       this.addProductToCart({ productId: this.product.id, amount: this.productAmount })
         .then(() => {
           this.productAdded = true
