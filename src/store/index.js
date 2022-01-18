@@ -62,9 +62,10 @@ export default new Vuex.Store({
               context.state.preLoadingCart = false;
               context.commit('updateCartProductsData', response.data.items);
               context.commit('syncCartProductsData');
+            }).catch(err => {
+              context.state.preLoadingCart = false;
+              console.log(err)
             });
-
-
     },
     deleteCartProduct(context, productId) {
           return axios.delete(API_BASE_URL + '/api/baskets/products', {
@@ -146,7 +147,7 @@ export default new Vuex.Store({
       });
     },
     cartTotalPrice(state, getters) {
-      return getters.cartDetailProducts.reduce((acc, item) => (item.product.price * item.amount) + acc, 0);
+      return getters.cartDetailProducts.reduce((acc, item) => Math.abs(item.product.price * item.amount) + acc, 0);
     }
   }
 });

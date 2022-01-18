@@ -3,14 +3,12 @@
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="index.html">
-            Каталог
-          </a>
+          <router-link :to="{name: 'main'}" class="breadcrumbs__link">Каталог</router-link>
         </li>
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="cart.html">
+          <router-link class="breadcrumbs__link"  aria-label="Корзина с товарами" :to="{name: 'cart'}">
             Корзина
-          </a>
+          </router-link>
         </li>
         <li class="breadcrumbs__item">
           <a class="breadcrumbs__link">
@@ -62,19 +60,13 @@
           <div class="cart__options">
             <h3 class="cart__title">Доставка</h3>
             <ul class="cart__options options">
-              <li class="options__item">
+              <li class="options__item" v-for="(choice, idx) in delivery">
                 <label class="options__label">
-                  <input class="options__radio sr-only" type="radio" name="delivery" value="0" checked="">
+                  <input class="options__radio sr-only"
+                         type="radio" name="delivery"
+                         :value="choice"  v-model="selectDelivery" :checked="true" >
                   <span class="options__value">
-                    Самовывоз <b>бесплатно</b>
-                  </span>
-                </label>
-              </li>
-              <li class="options__item">
-                <label class="options__label">
-                  <input class="options__radio sr-only" type="radio" name="delivery" value="500">
-                  <span class="options__value">
-                    Курьером <b>500 ₽</b>
+                    {{ choice.name }} <b>{{ choice.price === 0 ? 'бесплатно' : choice.price + ' ₽'}} </b>
                   </span>
                 </label>
               </li>
@@ -84,7 +76,7 @@
             <ul class="cart__options options">
               <li class="options__item">
                 <label class="options__label">
-                  <input class="options__radio sr-only" type="radio" name="pay" value="card">
+                  <input class="options__radio sr-only" type="radio" name="pay" value="card" checked>
                   <span class="options__value">
                     Картой при получении
                   </span>
@@ -112,8 +104,9 @@
           </ul>
 
           <div class="cart__total">
-            <p>Доставка: <b>500 ₽</b></p>
-            <p>Итого: <b>{{ products.length }}</b> товара на сумму <b>{{ totalPrice | numberFormat}}0 ₽</b></p>
+            <p v-if="!selectDelivery ? selectDelivery = delivery[1] : selectDelivery">
+              {{ selectDelivery.name  }}: <b>{{ selectDelivery.price  }} ₽</b></p>
+            <p>Итого: <b>{{ products.length }}</b> товара на сумму <b>{{ totalPrice | numberFormat}} ₽</b></p>
           </div>
 
           <button class="cart__button button button--primery" type="submit">
@@ -146,7 +139,12 @@ export default {
       formData: {},
       formError: {},
       formErrorMessage: '',
-      loadOrder: false
+      loadOrder: false,
+      delivery: [
+        {id: 1, name: 'Доставка', price: 500},
+        {id: 2, name: 'Самовывоз', price: 0},
+      ],
+      selectDelivery: null
     }
   },
   components: {
@@ -159,6 +157,11 @@ export default {
   },
   filters: {
     numberFormat
+  },
+  watch: {
+    delivery() {
+      console.log(this.delivery);
+    }
   },
   methods: {
     order() {

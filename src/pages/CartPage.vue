@@ -3,14 +3,13 @@
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="index.html">
-            Каталог
-          </a>
+          <router-link :to="{name: 'main'}" class="breadcrumbs__link">Каталог</router-link>
+
         </li>
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link">
+          <router-link class="breadcrumbs__link"  aria-label="Корзина с товарами" :to="{name: 'cart'}">
             Корзина
-          </a>
+          </router-link>
         </li>
       </ul>
 
@@ -25,7 +24,7 @@
     <section class="cart">
       <div v-if="this.$store.state.preLoadingCart">Загрузка корзины...</div>
       <Preloader v-if="this.$store.state.preLoadingCart" />
-      <form class="cart__form form" action="#" method="POST">
+      <form class="cart__form form"  method="POST">
         <div class="cart__field">
           <ul class="cart__list">
             <CartItem v-for="item in products" :key="item.id" :item="item" />

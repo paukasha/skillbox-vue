@@ -117,7 +117,8 @@
               <ProductCount :amount="productAmount"
                             @update:amount="productAmount = $event"/>
 
-              <button class="button button--primery" type="submit" :disabled="productAddSending">
+              <button class="button button--primery" type="submit"
+                      :disabled="productAddSending || productAmount < 0 || productAmount === ''">
                 В корзину
               </button>
               <div v-show="productAdded">Товар добавлен в корзину</div>
@@ -227,15 +228,21 @@ export default {
     addToCart() {
       this.productAdded = false
       this.productAddSending = true
+
       this.addProductToCart({ productId: this.product.id, amount: this.productAmount })
         .then(() => {
           this.productAdded = true
           this.productAddSending = false
-        })
+        }).catch(err => {
+        this.productAdded = false
+        this.productAddSending = false
+        console.log(err)
+      })
     },
     loadProduct() {
       this.productLoading = true;
       this.productLoadingFailed = false;
+
       axios.get(API_BASE_URL + '/api/products/' + this.$route.params.id)
         .then(response => this.productData = response.data)
         .catch(() => this.productLoadingFailed = true)

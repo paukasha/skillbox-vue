@@ -17,7 +17,7 @@
     </div>
 
     <b class="product__price">
-      {{ (item.amount * item.product.price) | numberFormat }} ₽
+      {{ Math.abs(item.amount * item.product.price) | numberFormat }} ₽
     </b>
 
     <button class="product__del button-del"
@@ -54,7 +54,6 @@ export default {
             productId: this.item.productId,
             amount: value
           });
-        console.log(value)
       }
     }
   },
