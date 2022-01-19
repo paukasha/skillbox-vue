@@ -6,7 +6,7 @@
     <span v-if="this.$store.state.preLoadingCart" class="header__preloader">
       <LightPreloader />
     </span>
-    <span v-else class="header__count" aria-label="Количество товаров">{{ $store.state.cartProducts.length }}</span>
+    <span v-else class="header__count" aria-label="Количество товаров">{{ totalQuantity }}</span>
 
 
   </router-link>
@@ -16,10 +16,15 @@
 
 <script>
 import LightPreloader from '@/components/preloaders/LightPreloader'
+import { mapGetters } from 'vuex';
 export default {
   components: {
     LightPreloader
-  }
+  },
+    computed: {
+      ...mapGetters({ totalQuantity: 'productsQuantity' }),
+    },
+
 }
 </script>
 

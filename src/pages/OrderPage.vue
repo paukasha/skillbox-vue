@@ -21,7 +21,7 @@
         Корзина
       </h1>
       <span class="content__info">
-        {{ products.length }} товара
+        {{ totalQuantity + ' ' + declineStr  }}
       </span>
     </div>
 
@@ -100,13 +100,14 @@
               <h3>{{ item.product.title }}</h3>
               <b>{{ item.product.price | numberFormat}} ₽</b>
               <span>Артикул: {{ item.product.id }}</span>
+              <span>Кол-во: {{ item.amount }}</span>
             </li>
           </ul>
 
           <div class="cart__total">
             <p v-if="!selectDelivery ? selectDelivery = delivery[1] : selectDelivery">
               {{ selectDelivery.name  }}: <b>{{ selectDelivery.price  }} ₽</b></p>
-            <p>Итого: <b>{{ products.length }}</b> товара на сумму <b>{{ totalPrice | numberFormat}} ₽</b></p>
+            <p>Итого: <b>{{ totalQuantity}}</b> {{declineStr}} на сумму <b>{{ totalPrice | numberFormat}} ₽</b></p>
           </div>
 
           <button class="cart__button button button--primery" type="submit">
@@ -132,6 +133,7 @@ import { API_BASE_URL } from '../config';
 import { mapGetters } from 'vuex';
 import numberFormat from '@/helpers/numberFormat'
 import Preloader from '@/components/preloaders/PreLoader'
+import { wordDecline } from '@/helpers/decline'
 
 export default {
   data() {
@@ -144,7 +146,9 @@ export default {
         {id: 1, name: 'Доставка', price: 500},
         {id: 2, name: 'Самовывоз', price: 0},
       ],
-      selectDelivery: null
+      selectDelivery: null,
+      declineWords: ['товар','товара','товаров'],
+
     }
   },
   components: {
@@ -153,15 +157,13 @@ export default {
     Preloader
   },
   computed: {
-    ...mapGetters({ products: 'cartDetailProducts', totalPrice: 'cartTotalPrice' }),
+    ...mapGetters({ products: 'cartDetailProducts', totalPrice: 'cartTotalPrice', totalQuantity: 'productsQuantity' }),
+    declineStr() {
+     return  wordDecline(this.totalQuantity, this.declineWords)
+    }
   },
   filters: {
     numberFormat
-  },
-  watch: {
-    delivery() {
-      console.log(this.delivery);
-    }
   },
   methods: {
     order() {

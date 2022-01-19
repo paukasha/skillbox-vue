@@ -80,7 +80,7 @@
           <ul class="cart__orders">
             <li class="cart__order" v-for="item in clientOrderInfo.basket.items">
               <h3>{{ item.product.title }}</h3>
-              <b>{{item.product.price | numberFormat }} ₽</b>
+              <b>{{ item.product.price | numberFormat }} ₽</b>
               <span>Артикул: {{ item.product.id }}</span>
             </li>
           </ul>
@@ -96,15 +96,17 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import numberFormat from '@/helpers/numberFormat';
 import PreLoader from '../components/preloaders/PreLoader';
+import { wordDecline } from '../helpers/decline';
 
 export default {
   computed: {
     clientOrderInfo(){
       return this.$store.state.orderInfo
-    }
+    },
+
   },
   filters: {
     numberFormat
@@ -112,7 +114,13 @@ export default {
   components: {
     PreLoader
   },
-    created() {
+  mounted() {
+
+    console.log ( wordDecline(1, ['товар','товара','товаров'])  );
+    console.log ( wordDecline(2, ['товар','товара','товаров'])  );
+    console.log ( wordDecline(5, ['товар','товара','товаров'])  );
+  },
+  created() {
       if (this.$store.state.orderInfo && this.$store.state.orderInfo === this.$route.params.id) {
         return
       }
